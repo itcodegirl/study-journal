@@ -1,0 +1,73 @@
+:root {
+  color-scheme: light;
+
+  --font-ui: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-notebook: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  /* App shell: cool, crisp neutrals with an indigo accent. */
+  --shell-bg: #eef0f4;
+  --surface: #ffffff;
+  --surface-muted: #f4f6f9;
+  --surface-hover: #e9edf3;
+  --border: #d8dde6;
+  --border-strong: #b6bfcc;
+  --text: #1c2230;
+  --text-muted: #57606f;
+  --text-faint: #79828f;
+  --accent: #3350d3;
+  --accent-strong: #2740b3;
+  --accent-soft: #e6eafc;
+  --accent-text: #2b45c4;
+  --focus: #1f6feb;
+  --danger: #b42318;
+  --danger-soft: #fde8e6;
+  --success: #1f7a4d;
+  --warning-text: #7a4300;
+  --warning-soft: #fff1d6;
+
+  /* Notebook page: warm paper, blue rules, rose margin line, yellow highlighter. */
+  --paper: #fffdf7;
+  --paper-rule: #d9e2f3;
+  --paper-margin: #e4a0a0;
+  --paper-text: #21262f;
+  --paper-muted: #5f6672;
+  --highlight: #ffe98a;
+
+  /* Study objects: each kind has its own hue so the rail never reads as one color. */
+  --kind-card: #1f7466;
+  --kind-card-soft: #ddf2ec;
+  --kind-question: #a85400;
+  --kind-question-soft: #fff0dc;
+  --kind-idea: #6544c4;
+  --kind-idea-soft: #ebe5fb;
+
+  --line: 2rem;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(20, 28, 45, 0.06), 0 1px 1px rgba(20, 28, 45, 0.04);
+  --shadow: 0 8px 24px rgba(20, 28, 45, 0.1), 0 2px 6px rgba(20, 28, 45, 0.06);
+  --shadow-lg: 0 24px 64px rgba(20, 28, 45, 0.2);
+
+  --sidebar-width: 264px;
+  --rail-width: 328px;
+  --rail-strip-width: 56px;
+  --topbar-height: 56px;
+  --utility-bar-height: 66px;
+}
+
+[data-kind='card'] {
+  --kind: var(--kind-card);
+  --kind-soft: var(--kind-card-soft);
+}
+
+[data-kind='question'] {
+  --kind: var(--kind-question);
+  --kind-soft: var(--kind-question-soft);
+}
+
+[data-kind='idea'] {
+  --kind: var(--kind-idea);
+  --kind-soft: var(--kind-idea-soft);
+}

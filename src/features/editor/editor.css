@@ -1,0 +1,314 @@
+/* Formatting toolbar */
+
+.editor-toolbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.editor-toolbar__controls {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.editor-toolbar__controls::-webkit-scrollbar {
+  display: none;
+}
+
+.editor-toolbar__group {
+  display: flex;
+  gap: 0.125rem;
+  padding-right: 0.375rem;
+  border-right: 1px solid var(--border);
+}
+
+.editor-toolbar__group:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.editor-toolbar__trailing {
+  flex: none;
+  margin-left: auto;
+}
+
+.toolbar-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.toolbar-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.toolbar-button[aria-pressed='true'] {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.toolbar-button:disabled {
+  opacity: 0.4;
+}
+
+@media (pointer: coarse) {
+  .toolbar-button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Link editor popover */
+
+.link-editor {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0.5rem;
+  z-index: 15;
+  width: min(28rem, calc(100vw - 2rem));
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.link-editor__label {
+  display: block;
+  margin-bottom: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.link-editor__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.link-editor__input {
+  flex: 1 1 12rem;
+}
+
+.link-editor .field__error {
+  margin-top: 0.375rem;
+}
+
+/* Notebook editor content. Every block keeps a line-height of var(--line) so
+   text sits on the ruled lines of the page. */
+
+.notebook-editor {
+  position: relative;
+}
+
+.notebook-editor__content {
+  min-height: calc(var(--line) * 3);
+  outline: none;
+  font-family: var(--font-notebook);
+  font-size: 1.0625rem;
+  line-height: var(--line);
+  color: var(--paper-text);
+  overflow-wrap: anywhere;
+}
+
+.notebook-editor__content > * {
+  margin: 0;
+}
+
+.notebook-editor__content h2 {
+  margin-top: var(--line);
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: var(--line);
+}
+
+.notebook-editor__content h3 {
+  margin-top: var(--line);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: var(--line);
+}
+
+.notebook-editor__content h2:first-child,
+.notebook-editor__content h3:first-child {
+  margin-top: 0;
+}
+
+.notebook-editor__content ul,
+.notebook-editor__content ol {
+  padding-left: 1.5rem;
+}
+
+.notebook-editor__content li > p {
+  margin: 0;
+}
+
+.notebook-editor__content blockquote {
+  padding-left: 1rem;
+  border-left: 3px solid var(--border-strong);
+  color: var(--paper-muted);
+}
+
+.notebook-editor__content pre {
+  padding: 0 0.75rem;
+  border-radius: var(--radius-sm);
+  background: rgba(28, 34, 48, 0.055);
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  line-height: var(--line);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.notebook-editor__content pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.notebook-editor__content code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgba(28, 34, 48, 0.07);
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+}
+
+.notebook-editor__content mark {
+  padding: 0.06em 0;
+  background: var(--highlight);
+  color: inherit;
+  box-decoration-break: clone;
+}
+
+.notebook-editor__content u {
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+.notebook-editor__content a {
+  color: var(--accent-text);
+  text-underline-offset: 3px;
+}
+
+.notebook-editor__content hr {
+  height: var(--line);
+  border: 0;
+  background: linear-gradient(var(--border-strong), var(--border-strong)) center / 100% 1px no-repeat;
+}
+
+.notebook-editor__content .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--text-faint);
+  font-style: italic;
+  pointer-events: none;
+}
+
+.notebook-editor__content ::selection {
+  background: rgba(51, 80, 211, 0.22);
+}
+
+/* Selection menu (floats above selected text) */
+
+.selection-menu {
+  z-index: 30;
+}
+
+.selection-menu__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.25rem;
+  background: #1c2230;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.selection-menu__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 36px;
+  padding: 0 0.55rem;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #e6e9ef;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.selection-menu__button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.selection-menu__button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.selection-menu__button[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+
+.selection-menu__button:disabled {
+  opacity: 0.4;
+}
+
+.selection-menu__button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+.selection-menu__button--create[data-kind='card'] svg {
+  color: #7fd9c6;
+}
+
+.selection-menu__button--create[data-kind='question'] svg {
+  color: #ffc47e;
+}
+
+.selection-menu__button--create[data-kind='idea'] svg {
+  color: #cdb8ff;
+}
+
+.selection-menu__divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.25rem 0.2rem;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+@media (pointer: coarse) {
+  .selection-menu__button {
+    height: 42px;
+  }
+}
