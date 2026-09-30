@@ -1,4 +1,5 @@
-import { render, screen, within } from '@testing-library/react';
+import type { Editor } from '@tiptap/core';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
@@ -7,6 +8,7 @@ import { routes } from '../../app/router';
 import { createLocalRepositories } from '../../services/repositories';
 import { MemoryStorage } from '../../test/fakes';
 import { setViewportWidth } from '../../test/browserShims';
+import { getPlainText } from './journal.utils';
 
 const TOPIC = { id: 'state-derived-from-props', title: 'State derived from props' };
 
@@ -72,6 +74,50 @@ describe('JournalPage', () => {
     const cards = await repositories.cards.listForEntry(entry.id);
     expect(cards).toHaveLength(1);
     expect(cards[0]).toMatchObject({ journalEntryId: entry.id, topicId: TOPIC.id, prompt: 'Why not mirror props in state?' });
+  });
+
+  // Audit §36 "Note/card independence" and §37 source deletion: writing, editing,
+  // highlighting, and clearing notes never create or delete study objects.
+  it('never creates or removes cards, questions, or ideas as a side effect of writing', async () => {
+    const { repositories, user } = renderJournal();
+    await screen.findByRole('heading', { level: 1, name: TOPIC.title });
+    const entry = await repositories.journal.getOrCreateForTopic(TOPIC);
+    const notes = screen.getByRole('textbox', { name: 'My Notes' }) as HTMLElement & { editor: Editor };
+    const formatting = within(screen.getByRole('toolbar', { name: 'Formatting for My Notes' }));
+    const savedNotes = async () => getPlainText((await repositories.journal.getOrCreateForTopic(TOPIC)).content);
+    const studyObjectCounts = async () =>
+      Promise.all([repositories.cards, repositories.questions, repositories.ideas].map(async (repo) => (await repo.listForEntry(entry.id)).length));
+
+    act(() => {
+      notes.editor.commands.insertContent('Compute derived values during render instead of storing them.');
+    });
+    await waitFor(async () => expect(await savedNotes()).toContain('Compute derived values'), { timeout: 3000 });
+
+    act(() => {
+      notes.editor.commands.selectAll();
+    });
+    await user.click(formatting.getByRole('button', { name: 'Highlight' }));
+    await user.click(formatting.getByRole('button', { name: 'Underline' }));
+    act(() => {
+      notes.editor.chain().focus('end').insertContent(' Edited.').run();
+    });
+    await waitFor(async () => expect(await savedNotes()).toContain('Edited.'), { timeout: 3000 });
+    expect(JSON.stringify((await repositories.journal.getOrCreateForTopic(TOPIC)).content)).toContain('"highlight"');
+    expect(await studyObjectCounts()).toEqual([0, 0, 0]);
+
+    await user.click(within(rail()).getByRole('button', { name: 'New card' }));
+    const dialog = screen.getByRole('dialog', { name: 'Make a card' });
+    await user.type(within(dialog).getByLabelText(/^Prompt/), 'Where do derived values belong?');
+    await user.type(within(dialog).getByLabelText(/^Answer/), 'In render, not in state.');
+    await user.click(within(dialog).getByRole('button', { name: 'Save card' }));
+    expect(await studyObjectCounts()).toEqual([1, 0, 0]);
+
+    act(() => {
+      notes.editor.commands.clearContent(true);
+    });
+    await waitFor(async () => expect(await savedNotes()).toBe(''), { timeout: 3000 });
+    expect(await studyObjectCounts()).toEqual([1, 0, 0]);
+    expect(within(rail()).getByRole('article', { name: 'card: Where do derived values belong?' })).toBeInTheDocument();
   });
 
   it('creates questions and ideas manually and lists them under their tabs', async () => {
